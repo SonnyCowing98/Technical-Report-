@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import random
 import matplotlib as mpl
 from matplotlib.colors import colorConverter
+
 # The enviroment where the agents exist 
 crop = np.load('crop1.npy')
 crop1 = crop
@@ -37,23 +38,13 @@ class MoneyAgent(Agent):
         j , i = position
          # retrieves the cell neighbors 
         region = ModelEnviroment[max(0,j-1) : j+2,max(0,i-1) : i+2]        
-        # maskregion = np.zeros((3,3))
-        region[1,1] = 0
-        
+       
         # This line decides if the agents want to move to larger values or smaller values 
         PossipleSteps = np.where(region ==1 )
         stepsj, stepsi = PossipleSteps
         stepsarrayi1 = stepsj.shape
         rand = stepsarrayi1[0] 
-        
-
-
         x = random.sample(range(rand),1)
-
-    
-
-        
-        
         np.array(x)
         x = x[0]
         xx = stepsi[x]
@@ -162,3 +153,24 @@ pathplot = np.zeros((70,95), dtype = np.uint8)
 pathplot[agent1pathplot] = 1
 np.save('pathLE.npy', pathplot)
 
+# create dummy data
+zvals = crop1
+zvals2 = pathplot
+
+# generate the colors for your colormap
+color1 = colorConverter.to_rgba('white')
+color2 = colorConverter.to_rgba('red')
+
+# make the colormaps
+cmap1 = mpl.colors.LinearSegmentedColormap.from_list('my_cmap',['white','black'],256)
+cmap2 = mpl.colors.LinearSegmentedColormap.from_list('my_cmap2',[color1,color2],256)
+
+cmap2._init()
+alphas = np.linspace(0, 0.8, cmap2.N+3)
+cmap2._lut[:,-1] = alphas
+
+
+img2 = plt.imshow(zvals, interpolation='nearest', cmap=cmap1, origin='lower')
+img3 = plt.imshow(zvals2, interpolation='nearest', cmap=cmap2, origin='lower')
+
+plt.show()
